@@ -7,6 +7,7 @@ import (
 
 const (
 	link = "https://www.imdb.com/chart/top/?ref_=nv_mv_250"
+	
 )
 
 func InsertData() {
@@ -24,6 +25,7 @@ func InsertData() {
 		"CREATE TABLE IF NOT EXISTS Movies (" +
 			"id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
 			"title NVARCHAR(100) NOT NULL," +
+			"year INT NOT NULL," +
 			"rating FLOAT CHECK(rating>=0 AND rating <=10)," +
 			"url VARCHAR(255) NOT NULL)")
 	if error != nil {
@@ -35,10 +37,14 @@ func InsertData() {
 
 	//insert dữ liệu vào bảng
 	for _, movie := range movies {
-		_, err := db.Exec("INSERT INTO Movies (title,rating,url) VALUES (?,?,?)", movie.Title, movie.Rating, movie.Url)
+		_, err := db.Exec("INSERT INTO Movies (title,year,rating,url) VALUES (?,?,?,?)", movie.Title,movie.Year, movie.Rating, movie.Url)
 		if err != nil {
 			panic(err)
 		}
 	}
-
 }
+
+
+
+
+

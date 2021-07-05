@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
+	"strings"
 
 	"github.com/gocolly/colly"
 
@@ -28,7 +30,10 @@ func Crawl(link string) []model.Movie {
 		data := model.Movie{}
 		
 		data.Title = e.ChildText(".titleColumn") //Tìm đến thẻ con của thẻ tr có class titleColumn và lấy nội dung
-		data.Title = regexp.MustCompile(`\s+`).ReplaceAllString(data.Title, " ")
+		title := regexp.MustCompile(`\s+`).ReplaceAllString(data.Title, " ")
+		listTitleInfo := strings.Split(title,"(")
+		data.Title = listTitleInfo[0]
+		data.Year,_ = strconv.Atoi(listTitleInfo[1][0:len(listTitleInfo[1])-1])
 		data.Rating = e.ChildText(".imdbRating") //tìm đến thẻ con có class imdbRating và lấy nội dung
 		data.Url = e.ChildAttr("a", "href")      //Tìm đến thẻ con a và lấy nội dung thuộc tính href
 		data.Url = "https://www.imdb.com/"+data.Url
@@ -43,3 +48,5 @@ func Crawl(link string) []model.Movie {
 	c.Visit(link) //Trình thu thập truy cập URL đó
 	return listMovies
 }
+
+
